@@ -8,6 +8,8 @@
 由于微软还未在中国大陆开放 `new bing` 的使用，以国内IP去访问 `bing` 会导致跳转 `404` 而无法使用  
 故需要配置代理 `proxy`
 
+New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下
+
 ## 效果
 
 ![example](.github/screenshot.png)
