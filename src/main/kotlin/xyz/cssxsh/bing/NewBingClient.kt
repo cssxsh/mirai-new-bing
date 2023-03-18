@@ -17,9 +17,8 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import org.slf4j.*
 import java.util.*
-import kotlin.coroutines.*
 
-public open class NewBingClient(@PublishedApi internal val config: NewBingConfig) : CoroutineScope {
+public open class NewBingClient(@PublishedApi internal val config: NewBingConfig) {
     public companion object {
         public const val RS: String = "\u001E"
     }
@@ -45,7 +44,6 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             }
         }
     }
-    public override val coroutineContext: CoroutineContext = EmptyCoroutineContext
     protected open val format: Json = Json
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
     @PublishedApi internal val uuid: UUID = UUID.randomUUID()
@@ -91,23 +89,40 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             when (val frame = incoming.receive()) {
                 is Frame.Binary -> {
                     // TODO
+                    logger.warn("Frame.Binary")
                 }
                 is Frame.Text -> {
                     for (text in frame.readText().splitToSequence(RS)) {
                         if (text.isEmpty()) continue
                         val item = format.decodeFromString(JsonObject.serializer(), text)
-                        if (logger.isTraceEnabled) logger.trace(item.toString())
                         when (item["type"]?.jsonPrimitive?.int) {
                             1 -> {
-                                // TODO
+                                if (logger.isTraceEnabled) logger.trace(item.toString())
                             }
                             2 -> {
+                                if (logger.isDebugEnabled) logger.debug(item.toString())
                                 launch {
                                     shared.emit(chat.clientId to item)
                                 }
                             }
-                            3 -> return
-                            null -> Unit
+                            3 -> {
+                                if (logger.isDebugEnabled) logger.debug(item.toString())
+                                return
+                            }
+                            6 -> {
+                                if (logger.isDebugEnabled) logger.debug(item.toString())
+                                // echo
+                                launch {
+                                    sendJson {
+                                        put("type", 6)
+                                    }
+                                }
+                                continue
+                            }
+                            else -> {
+                                if (item.isEmpty().not()) logger.warn(item.toString())
+                                continue
+                            }
                         }
                     }
                 }
@@ -139,36 +154,17 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                         for (option in config.options) {
                             add(option)
                         }
-                        listOf(
-                            "deepleo",
-                            "nlu_direct_response_filter",
-                            "disable_emoji_spoken_text",
-                            "responsible_ai_policy_235",
-                            "enablemm",
-                            "dtappid",
-                            "rai253",
-                            "dv3sugg",
-                            "harmonyv3"
-                        ).forEach {
-                            add(it)
-                        }
                     }
                     putJsonArray("allowedMessageTypes") {
                         for (type in config.allowed) {
                             add(type)
-                        }
-                        listOf(
-                            "Chat",
-                            "InternalSearchQuery"
-                        ).forEach {
-                            add(it)
                         }
                     }
                     putJsonArray("sliceIds") {
                         // TODO
                     }
                     // XXX: traceId
-                    put("isStartOfSession", true)
+                    put("isStartOfSession", chat.index == 0)
                     put("conversationId", chat.conversationId)
                     put("conversationSignature", chat.conversationSignature)
                     putJsonObject("participant") {
