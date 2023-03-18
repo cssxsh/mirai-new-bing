@@ -44,12 +44,14 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             }
         }
     }
-    protected open val format: Json = Json
+    protected open val format: Json = Json {
+        ignoreUnknownKeys = true
+    }
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
-    @PublishedApi internal val uuid: UUID = UUID.randomUUID()
     @PublishedApi internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     public open suspend fun create(): NewBingChat {
+        val uuid: UUID = UUID.randomUUID()
         val response = http.get("https://www.bing.com/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
             header("x-ms-useragent", config.device)
@@ -72,10 +74,13 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             conversation.result.message ?: conversation.result.value
         }
 
+        logger.debug(response.toString())
+
         return NewBingChat(
             clientId = conversation.clientId,
             conversationId = conversation.conversationId,
             conversationSignature = conversation.conversationSignature,
+            uuid = uuid.toString(),
             index = 0
         )
     }
@@ -102,7 +107,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                             2 -> {
                                 if (logger.isDebugEnabled) logger.debug(item.toString())
                                 launch {
-                                    shared.emit(chat.clientId to item)
+                                    shared.emit(chat.uuid to item)
                                 }
                             }
                             3 -> {
@@ -190,13 +195,11 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         }, block)
     }
 
-    public suspend fun send(chat: NewBingChat, text: String): String {
+    public suspend fun send(chat: NewBingChat, text: String) {
         websocket {
             bind(chat = chat)
             message(chat = chat, text = text)
             handle(chat = chat)
         }
-
-        return chat.clientId
     }
 }

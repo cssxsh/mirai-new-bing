@@ -3,7 +3,7 @@ package xyz.cssxsh.mirai.bing
 import net.mamoe.mirai.console.data.*
 import xyz.cssxsh.bing.*
 
-public object MiraiNewBingConfig : ReadOnlyPluginConfig("openai"), NewBingConfig {
+public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("proxy")
     override val proxy: String by value("socks://127.0.0.1:7890")
 
@@ -43,4 +43,7 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("openai"), NewBingConfig
 
     @ValueName("chat_prefix")
     public val prefix: String by value("bing")
+
+    @ValueName("show_source_attributions")
+    public val source: Boolean by value(true)
 }

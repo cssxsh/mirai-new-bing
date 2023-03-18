@@ -4,9 +4,11 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
 import net.mamoe.mirai.console.command.CommandSender.Companion.toCommandSender
 import net.mamoe.mirai.console.permission.*
+import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.bing.*
 import kotlin.coroutines.*
@@ -16,19 +18,27 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     private val client = object : NewBingClient(config = MiraiNewBingConfig) {
         init {
             launch {
-                shared.collect { (clientId, data) ->
+                shared.collect { (uuid, data) ->
                     val item = data["item"] as? JsonObject ?: return@collect
                     val messages = item["messages"] as? JsonArray ?: return@collect
-                    for (message in messages) {
-                        message as? JsonObject ?: continue
-                        val author = message["author"]?.jsonPrimitive?.content ?: continue
-                        if ("bot" != author) continue
-                        val (id, _) = chats.entries.find { it.value.clientId == clientId } ?: continue
+                    for (element in messages) {
+                        val message = format.decodeFromJsonElement(NewBingMessage.serializer(), element)
+                        if ("bot" != message.author) continue
+                        if ("InternalSearchQuery" == message.messageType) continue
+                        val (id, _) = chats.entries.find { it.value.uuid == uuid } ?: continue
                         val subject = contacts[id] ?: continue
-                        val text = message["text"]?.jsonPrimitive?.content ?: continue
 
                         launch {
-                            subject.sendMessage(text)
+                            subject.sendMessage(buildMessageChain {
+                                appendLine(message.text)
+                                if (MiraiNewBingConfig.source && message.sourceAttributions.isEmpty().not()) {
+                                    appendLine()
+                                    var index = 1
+                                    for (attribution in message.sourceAttributions) {
+                                        appendLine("[^${index++}^] ${attribution.providerDisplayName} ${attribution.seeMoreUrl}")
+                                    }
+                                }
+                            })
                         }
                     }
                 }
@@ -56,13 +66,15 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     suspend fun MessageEvent.handle() {
         val content = message.contentToString()
         if (content.startsWith(MiraiNewBingConfig.prefix).not()) return
+        val commander = toCommandSender()
+        if (commander.hasPermission(chat).not()) return
 
-        val id = toCommandSender().permitteeId.asString()
+        val id = commander.permitteeId.asString()
         val cache = chats[id] ?: client.create()
         chats[id] = cache
         contacts[id] = subject
         launch {
-            client.send(cache, content.removePrefix(MiraiNewBingConfig.prefix))
+            client.send(chat = cache, text = content.removePrefix(MiraiNewBingConfig.prefix))
         }
     }
 }

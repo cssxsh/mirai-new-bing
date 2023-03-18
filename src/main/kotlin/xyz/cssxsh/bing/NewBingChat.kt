@@ -10,6 +10,8 @@ public data class NewBingChat(
     val conversationId: String = "",
     @SerialName("conversationSignature")
     val conversationSignature: String = "",
+    @SerialName("uuid")
+    val uuid: String = "",
     @SerialName("index")
     var index: Int
 )
