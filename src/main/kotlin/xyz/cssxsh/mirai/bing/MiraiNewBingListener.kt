@@ -58,9 +58,15 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
                 // ...
             }
             is ExceptionInEventHandlerException -> {
-                logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception.cause)
+                if (exception.cause is java.net.SocketException) {
+                    logger.warning({ "当前代理设置: ${MiraiNewBingConfig.proxy.ifEmpty { "<empty>" }}" }, exception.cause)
+                } else {
+                    logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception.cause)
+                }
             }
-            else -> Unit
+            else -> {
+                logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception)
+            }
         }
     }
 
