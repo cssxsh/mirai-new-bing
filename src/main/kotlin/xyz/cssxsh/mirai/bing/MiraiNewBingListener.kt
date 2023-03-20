@@ -68,6 +68,8 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     fun MessageEvent.reload() {
         val commander = toCommandSender()
         if (commander.hasPermission(reload).not()) return
+        val content = message.contentToString()
+        if (content.startsWith(MiraiNewBingConfig.prefix).not()) return
 
         launch {
             with(MiraiNewBing) {
