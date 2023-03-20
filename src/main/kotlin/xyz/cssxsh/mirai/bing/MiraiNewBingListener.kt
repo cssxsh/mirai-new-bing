@@ -80,10 +80,8 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
     suspend fun MessageEvent.chat() {
         val commander = toCommandSender()
-        if (commander.hasPermission(chat).not()) {
-            logger.warning { "${commander.permitteeId.asString()} 没有 chat 权限" }
-            return
-        }
+        if (commander.hasPermission(chat).not()) return
+
         val content = message.contentToString()
         if (content.startsWith(MiraiNewBingConfig.prefix).not()) return
         val (test, style) = when {
