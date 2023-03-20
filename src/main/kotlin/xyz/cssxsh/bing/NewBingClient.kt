@@ -33,7 +33,8 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             requestTimeoutMillis = null
         }
         install(UserAgent) {
-            agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69"
+            agent =
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69"
         }
         ContentEncoding()
         WebSockets {
