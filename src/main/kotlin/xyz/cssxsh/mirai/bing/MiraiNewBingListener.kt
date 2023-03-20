@@ -113,8 +113,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         val cache = chats[id] ?: client.create()
         chats[id] = cache
         contacts[id] = fromEvent.subject
-        launch {
-            client.send(chat = cache, text = text, style = style)
-        }
+
+        client.send(chat = cache, text = text, style = style)
     }
 }
