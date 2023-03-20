@@ -53,7 +53,10 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
     @PublishedApi internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    public open suspend fun create(): NewBingChat {
+    /**
+     * @param style Balanced, Creative, Precise
+     */
+    public open suspend fun create(style: String = "Balanced"): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
         val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
@@ -83,7 +86,8 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             conversationId = conversation.conversationId,
             conversationSignature = conversation.conversationSignature,
             uuid = uuid.toString(),
-            index = 0
+            index = 0,
+            style = style
         )
     }
 
@@ -160,6 +164,20 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                     putJsonArray("optionsSets") {
                         for (option in config.options) {
                             add(option)
+                        }
+                        when (chat.style) {
+                            "Balanced" -> {
+                                add("galileo")
+                            }
+                            "Creative" -> {
+                                add("clgalileo")
+                                add("h3imaginative")
+                            }
+                            "Precise" -> {
+                                add("clgalileo")
+                                add("h3precise")
+                            }
+                            else -> logger.warn("Unknown Style: ${chat.style}")
                         }
                     }
                     putJsonArray("allowedMessageTypes") {

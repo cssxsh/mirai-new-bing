@@ -13,5 +13,7 @@ public data class NewBingChat(
     @SerialName("uuid")
     val uuid: String = "",
     @SerialName("index")
-    var index: Int
+    var index: Int,
+    @SerialName("style")
+    val style: String
 )
