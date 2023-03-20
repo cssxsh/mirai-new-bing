@@ -74,6 +74,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
                 MiraiNewBingConfig.reload()
                 logger.warning { "配置已重新加载" }
             }
+            subject.sendMessage("配置已重新加载")
         }
     }
 
