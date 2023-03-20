@@ -88,9 +88,6 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
 
         val content = message.contentToString()
         val (test, style) = when {
-            content.startsWith(MiraiNewBingConfig.prefix) -> {
-                content.removePrefix(MiraiNewBingConfig.prefix) to MiraiNewBingConfig.default
-            }
             content.startsWith(MiraiNewBingConfig.creative) -> {
                 content.removePrefix(MiraiNewBingConfig.creative) to "Creative"
             }
@@ -99,6 +96,9 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
             }
             content.startsWith(MiraiNewBingConfig.precise) -> {
                 content.removePrefix(MiraiNewBingConfig.precise) to "Precise"
+            }
+            content.startsWith(MiraiNewBingConfig.prefix) -> {
+                content.removePrefix(MiraiNewBingConfig.prefix) to MiraiNewBingConfig.default
             }
             else -> return
         }
