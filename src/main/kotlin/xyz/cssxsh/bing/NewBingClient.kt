@@ -51,7 +51,8 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         ignoreUnknownKeys = true
     }
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
-    @PublishedApi internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    @PublishedApi
+    internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     /**
      * @param style Balanced, Creative, Precise
