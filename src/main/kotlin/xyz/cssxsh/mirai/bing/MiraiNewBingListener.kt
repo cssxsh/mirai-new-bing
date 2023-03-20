@@ -64,12 +64,13 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         }
     }
 
-    @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
+    @EventHandler(priority = EventPriority.HIGH, concurrency = ConcurrencyKind.CONCURRENT)
     fun MessageEvent.reload() {
         val commander = toCommandSender()
         if (commander.hasPermission(reload).not()) return
         val content = message.contentToString()
         if (content.startsWith(MiraiNewBingConfig.reload).not()) return
+        intercept()
 
         launch {
             with(MiraiNewBing) {
