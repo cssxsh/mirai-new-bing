@@ -2,6 +2,7 @@ package xyz.cssxsh.mirai.bing
 
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
+import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandSender.Companion.toCommandSender
 import net.mamoe.mirai.console.permission.*
 import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
@@ -47,6 +48,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     }
     private val logger = MiraiLogger.Factory.create(this::class)
     internal val chat: Permission by MiraiBingPermissions
+    internal val reload: Permission by MiraiBingPermissions
     private val chats: MutableMap<String, NewBingChat> = java.util.concurrent.ConcurrentHashMap()
     private val contacts: MutableMap<String, Contact> = java.util.concurrent.ConcurrentHashMap()
 
@@ -63,18 +65,55 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     }
 
     @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
-    suspend fun MessageEvent.handle() {
+    fun MessageEvent.reload() {
+        val commander = toCommandSender()
+        if (commander.hasPermission(reload).not()) return
+
+        launch {
+            with(MiraiNewBing) {
+                MiraiNewBingConfig.reload()
+                logger.warning { "配置已重新加载" }
+            }
+        }
+    }
+
+    @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
+    suspend fun MessageEvent.chat() {
+        val commander = toCommandSender()
+        if (commander.hasPermission(chat).not()) {
+            logger.warning { "${commander.permitteeId.asString()} 没有 chat 权限" }
+            return
+        }
         val content = message.contentToString()
         if (content.startsWith(MiraiNewBingConfig.prefix).not()) return
-        val commander = toCommandSender()
-        if (commander.hasPermission(chat).not()) return
+        val (test, style) = when {
+            content.startsWith(MiraiNewBingConfig.prefix) -> {
+                content.removePrefix(MiraiNewBingConfig.prefix) to MiraiNewBingConfig.default
+            }
+            content.startsWith(MiraiNewBingConfig.creative) -> {
+                content.removePrefix(MiraiNewBingConfig.creative) to "Creative"
+            }
+            content.startsWith(MiraiNewBingConfig.balanced) -> {
+                content.removePrefix(MiraiNewBingConfig.balanced) to "Balanced"
+            }
+            content.startsWith(MiraiNewBingConfig.precise) -> {
+                content.removePrefix(MiraiNewBingConfig.precise) to "Precise"
+            }
+            else -> return
+        }
 
-        val id = commander.permitteeId.asString()
+        launch {
+            commander.send(text = test, style = style)
+        }
+    }
+
+    private suspend fun CommandSenderOnMessage<*>.send(text: String, style: String) {
+        val id = permitteeId.asString()
         val cache = chats[id] ?: client.create()
         chats[id] = cache
-        contacts[id] = subject
+        contacts[id] = fromEvent.subject
         launch {
-            client.send(chat = cache, text = content.removePrefix(MiraiNewBingConfig.prefix))
+            client.send(chat = cache, text = text, style = style)
         }
     }
 }

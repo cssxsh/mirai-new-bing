@@ -21,6 +21,8 @@ import java.util.*
 public open class NewBingClient(@PublishedApi internal val config: NewBingConfig) {
     public companion object {
         public const val RS: String = "\u001E"
+        public const val USER_AGENT: String =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69"
     }
 
     public open val http: HttpClient = HttpClient(OkHttp) {
@@ -33,8 +35,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             requestTimeoutMillis = null
         }
         install(UserAgent) {
-            agent =
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69"
+            agent = USER_AGENT
         }
         ContentEncoding()
         WebSockets {
@@ -51,13 +52,11 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         ignoreUnknownKeys = true
     }
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
+
     @PublishedApi
     internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    /**
-     * @param style Balanced, Creative, Precise
-     */
-    public open suspend fun create(style: String = "Balanced"): NewBingChat {
+    public open suspend fun create(): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
         val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
@@ -87,8 +86,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             conversationId = conversation.conversationId,
             conversationSignature = conversation.conversationSignature,
             uuid = uuid.toString(),
-            index = 0,
-            style = style
+            index = 0
         )
     }
 
@@ -155,7 +153,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         }
     }
 
-    protected open suspend fun DefaultClientWebSocketSession.message(chat: NewBingChat, text: String) {
+    protected open suspend fun DefaultClientWebSocketSession.message(chat: NewBingChat, text: String, style: String) {
         sendJson {
             put("type", 4)
             //
@@ -166,19 +164,19 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                         for (option in config.options) {
                             add(option)
                         }
-                        when (chat.style) {
+                        when (style) {
                             "Balanced" -> {
                                 add("galileo")
                             }
                             "Creative" -> {
-                                add("clgalileo")
+                                // add("clgalileo")
                                 add("h3imaginative")
                             }
                             "Precise" -> {
-                                add("clgalileo")
+                                // add("clgalileo")
                                 add("h3precise")
                             }
-                            else -> logger.warn("Unknown Style: ${chat.style}")
+                            else -> logger.warn("Unknown Style: $style")
                         }
                     }
                     putJsonArray("allowedMessageTypes") {
@@ -216,10 +214,13 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         }, block)
     }
 
-    public suspend fun send(chat: NewBingChat, text: String) {
+    /**
+     * @param style Balanced, Creative, Precise
+     */
+    public suspend fun send(chat: NewBingChat, text: String, style: String) {
         websocket {
             bind(chat = chat)
-            message(chat = chat, text = text)
+            message(chat = chat, text = text, style = style)
             handle(chat = chat)
         }
     }

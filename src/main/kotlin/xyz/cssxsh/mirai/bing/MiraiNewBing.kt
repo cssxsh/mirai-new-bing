@@ -29,6 +29,7 @@ public object MiraiNewBing : KotlinPlugin(
         MiraiNewBingConfig.save()
 
         MiraiNewBingListener.chat
+        MiraiNewBingListener.reload
         MiraiNewBingListener.registerTo(globalEventChannel())
     }
 

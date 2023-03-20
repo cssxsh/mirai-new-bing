@@ -5,7 +5,7 @@ import xyz.cssxsh.bing.*
 
 public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("proxy")
-    override val proxy: String by value("socks://127.0.0.1:7890")
+    override val proxy: String by value("")
 
     @ValueName("doh")
     override val doh: String by value("https://public.dns.iij.jp/dns-query")
@@ -43,6 +43,21 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
 
     @ValueName("chat_prefix")
     public val prefix: String by value("bing")
+
+    @ValueName("default_style")
+    public val default: String by value("Balanced")
+
+    @ValueName("reload_prefix")
+    public val reload: String by value("bing-reload")
+
+    @ValueName("balanced_prefix")
+    public val balanced: String by value("bing-balanced")
+
+    @ValueName("creative_prefix")
+    public val creative: String by value("bing-creative")
+
+    @ValueName("precise_prefix")
+    public val precise: String by value("bing-precise")
 
     @ValueName("show_source_attributions")
     public val source: Boolean by value(true)
