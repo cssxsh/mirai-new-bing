@@ -59,6 +59,12 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("precise_prefix")
     public val precise: String by value("bing-precise")
 
+    @ValueName("reset_prefix")
+    public val reset: String by value("bing-reset")
+
+    @ValueName("chat_expiration_s")
+    public val expiration: Long by value(300L)
+
     @ValueName("show_source_attributions")
     public val source: Boolean by value(true)
 }
