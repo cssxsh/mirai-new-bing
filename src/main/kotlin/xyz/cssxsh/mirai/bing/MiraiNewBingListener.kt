@@ -86,7 +86,6 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         if (commander.hasPermission(chat).not()) return
 
         val content = message.contentToString()
-        if (content.startsWith(MiraiNewBingConfig.prefix).not()) return
         val (test, style) = when {
             content.startsWith(MiraiNewBingConfig.prefix) -> {
                 content.removePrefix(MiraiNewBingConfig.prefix) to MiraiNewBingConfig.default
