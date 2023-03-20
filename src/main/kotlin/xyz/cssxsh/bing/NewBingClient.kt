@@ -32,7 +32,9 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             connectTimeoutMillis = config.timeout
             requestTimeoutMillis = null
         }
-        BrowserUserAgent()
+        install(UserAgent) {
+            agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69"
+        }
         ContentEncoding()
         WebSockets {
             //
@@ -52,10 +54,9 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
 
     public open suspend fun create(): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
-        val response = http.get("https://www.bing.com/turing/conversation/create") {
+        val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
             header("x-ms-useragent", config.device)
-            header("accept-language", "en-US,en;q=0.9")
 
             if ("=" in config.cookie) {
                 header("cookie", config.cookie)
