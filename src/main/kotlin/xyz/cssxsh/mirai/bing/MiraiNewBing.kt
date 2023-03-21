@@ -11,7 +11,7 @@ public object MiraiNewBing : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.new-bing",
         name = "mirai-new-bing",
-        version = "0.2.0",
+        version = "0.3.0",
     ) {
         author("cssxsh")
     }
