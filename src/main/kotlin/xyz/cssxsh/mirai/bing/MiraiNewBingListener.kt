@@ -51,7 +51,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     internal val chat: Permission by MiraiBingPermissions
     internal val reload: Permission by MiraiBingPermissions
     private val chats: MutableMap<String, NewBingChat> = java.util.concurrent.ConcurrentHashMap()
-    private val chatExpirationTimes: MutableMap<String, Instant> = java.util.concurrent.ConcurrentHashMap()
+    private val expiration: MutableMap<String, Instant> = java.util.concurrent.ConcurrentHashMap()
     private val contacts: MutableMap<String, Contact> = java.util.concurrent.ConcurrentHashMap()
 
     override fun handleException(context: CoroutineContext, exception: Throwable) {
@@ -80,11 +80,11 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         if (content.startsWith(MiraiNewBingConfig.reload).not()) return
         intercept()
 
+        with(MiraiNewBing) {
+            MiraiNewBingConfig.reload()
+            logger.warning { "配置已重新加载" }
+        }
         launch {
-            with(MiraiNewBing) {
-                MiraiNewBingConfig.reload()
-                logger.warning { "配置已重新加载" }
-            }
             subject.sendMessage("配置已重新加载")
         }
     }
@@ -97,10 +97,10 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         if (content.startsWith(MiraiNewBingConfig.reset).not()) return
         intercept()
 
+        val id = commander.permitteeId.asString()
+        chats.remove(id)
+        contacts.remove(id)
         launch {
-            val id = commander.permitteeId.asString()
-            chats.remove(id)
-            contacts.remove(id)
             subject.sendMessage(MiraiNewBingConfig.newTopicGreet.random())
         }
     }
@@ -136,9 +136,9 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         val id = permitteeId.asString()
         var cache = chats[id]
         val now = Instant.now()
-        if (cache == null || chatExpirationTimes[id]?.isAfter(now) == true) {
+        if (cache == null || (expiration[id] ?: Instant.MIN) < now) {
             cache = client.create()
-            chatExpirationTimes[id] = now.plusSeconds(MiraiNewBingConfig.expiration)
+            expiration[id] = now.plusSeconds(MiraiNewBingConfig.expiresIn)
         }
         chats[id] = cache
         contacts[id] = fromEvent.subject

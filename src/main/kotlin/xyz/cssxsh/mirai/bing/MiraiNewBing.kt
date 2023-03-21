@@ -5,6 +5,7 @@ import net.mamoe.mirai.console.data.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.event.*
+import net.mamoe.mirai.utils.*
 
 public object MiraiNewBing : KotlinPlugin(
     JvmPluginDescription(
@@ -24,12 +25,12 @@ public object MiraiNewBing : KotlinPlugin(
             @Suppress("UNCHECKED_CAST")
             val value = MiraiNewBingConfig.findBackingFieldValue<String>("cookie") as Value<String>
             value.value = token
-
         }
         MiraiNewBingConfig.save()
 
         MiraiNewBingListener.chat
         MiraiNewBingListener.reload
+        logger.warning { "使用前请赋予权限！！！！！！！！！" }
         MiraiNewBingListener.registerTo(globalEventChannel())
     }
 

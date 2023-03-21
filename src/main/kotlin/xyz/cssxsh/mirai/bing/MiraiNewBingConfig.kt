@@ -63,13 +63,13 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     public val reset: String by value("bing-reset")
 
     @ValueName("chat_expires_in")
-    public val expiration: Long by value(300L)
+    public val expiresIn: Long by value(300L)
 
     @ValueName("show_source_attributions")
     public val source: Boolean by value(true)
 
     @ValueName("new_topic_greet")
-    public val newTopicGreet: Array<String> by value(arrayOf(
+    public val newTopicGreet: List<String> by value(listOf(
         "谢谢你帮我理清头绪! 我现在能帮你做什么?",
         "谢谢你! 知道你什么时候准备好继续前进总是很有帮助的。我现在能为你回答什么问题?",
         "重新开始总是很棒。问我任何问题!",
