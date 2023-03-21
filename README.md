@@ -50,12 +50,22 @@ New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访
 `bing.yml` - `options` 机器人参数配置
 
 由于 `New Bing` 并不存在公开的官方文档，所以这一项有具体作用并不是很清楚  
-你可以到 [discussions#4](https://github.com/cssxsh/mirai-new-bing/discussions/4) 交流
+你可以到 [discussions#4](https://github.com/cssxsh/mirai-new-bing/discussions/4) 交流讨论
 
-*   `deepleo` 用途补码，感觉是增加对话深度的
+*   `deepleo` 用途不明，感觉是增加对话深度的
 *   `enable_debug_commands`
 *   `disable_emoji_spoken_text`
 *   `enablemm`
+*   `galileo` 对应模式 `Balanced` (请勿加入 options, 它会在模式指定的时候加入)
+*   `h3imaginative` 对应模式 `Creative` (请勿加入 options, 它会在模式指定的时候加入)
+*   `h3precise` 对应模式 `Precise` (请勿加入 options, 它会在模式指定的时候加入)
+*   `nlu_direct_response_filter` 
+*   `responsible_ai_policy_235`
+*   `wlthrottle`
+*   `cachewriteext`
+*   `e2ecachewrite`
+*   `dv3sugg`
+*   `clgalileo`
 
 ## 安装
 
