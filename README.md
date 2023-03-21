@@ -18,6 +18,9 @@
 
 New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下
 
+出现 [`Sorry, you need to login first to access this service.`](https://github.com/cssxsh/mirai-new-bing/issues/1) 表示Cookie不可用  
+原因可能是是 IP 和 Cookie 不匹配（浏览器和插件没有使用同一个代理，或者同一个网络）。
+
 ## 效果
 
 ![example](.github/screenshot.png)
@@ -30,7 +33,7 @@ New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访
 *   `timeout` API超时时间
 *   `cookie` New Bing 网页 Cookie
 *   `chat_prefix` 聊天触发前缀, 默认 `bing`
-*   `default_style` 默认使用的风格, 可选择值有 ` Balanced, Creative, Precise`
+*   `default_style` 默认使用的风格, 可选择值有 `Balanced`, `Creative`, `Precise`
 *   `reload_prefix` 触发配置重置，`bing-reload`
 *   `balanced_prefix` 聊天(平衡)触发前缀，`bing-balanced`
 *   `creative_prefix` 聊天(创意)触发前缀，`bing-creative`
@@ -38,6 +41,16 @@ New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访
 *   `reset_prefix` 触发聊天会话重置，`bing-reset`
 *   `chat_expires_in` 聊天会话过期时间，过期后自动重置 单位秒
 *   `show_source_attributions` 输出来源信息（URL), 默认 `true`
+
+`bing.yml` - `options` 机器人参数配置
+
+由于 `New Bing` 并不存在公开的官方文档，所以这一项有具体作用并不是很清楚  
+你可以到 [discussions#4](https://github.com/cssxsh/mirai-new-bing/discussions/4) 交流
+
+*   `deepleo` 用途补码，感觉是增加对话深度的
+*   `enable_debug_commands`
+*   `disable_emoji_spoken_text`
+*   `enablemm`
 
 ## 安装
 
