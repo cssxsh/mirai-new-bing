@@ -61,6 +61,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
             header("x-ms-useragent", config.device)
+            header("accept-language", config.language)
 
             if ("=" in config.cookie) {
                 header("cookie", config.cookie)
@@ -210,7 +211,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
 
     protected open suspend fun websocket(block: suspend DefaultClientWebSocketSession.() -> Unit) {
         http.wss("wss://sydney.bing.com/sydney/ChatHub", {
-            header("accept-language", "en-US,en;q=0.9")
+            header("accept-language", config.language)
         }, block)
     }
 

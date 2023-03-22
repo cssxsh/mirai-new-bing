@@ -8,6 +8,7 @@ public interface NewBingConfig {
     public val timeout: Long
     public val cookie: String
     public val device: String
+    public val language: String
 
     public val options: List<String>
     public val allowed: List<String>
