@@ -1,5 +1,7 @@
 package xyz.cssxsh.mirai.bing
 
+import io.ktor.client.plugins.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
 import net.mamoe.mirai.console.command.*
@@ -61,10 +63,13 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
             }
             is ExceptionInEventHandlerException -> {
                 if (exception.cause is java.net.SocketException) {
-                    logger.warning({ "当前代理设置: ${MiraiNewBingConfig.proxy.ifEmpty { "<empty>" }}" }, exception.cause)
+                    logger.warning({ "当前代理设置: ${MiraiNewBingConfig.proxy.ifEmpty { "''" }}" }, exception.cause)
                 } else {
                     logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception.cause)
                 }
+            }
+            is ClientRequestException -> {
+                logger.warning { "当前代理设置: ${MiraiNewBingConfig.proxy.ifEmpty { "''" }}, 请求失败: ${exception.response.request.url}" }
             }
             else -> {
                 logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception)
@@ -139,6 +144,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         if (cache == null || (expiration[id] ?: Instant.MIN) < now) {
             cache = client.create()
             expiration[id] = now.plusSeconds(MiraiNewBingConfig.expiresIn)
+            logger.info { "new bing chat ${cache.uuid} - ${cache.clientId} - ${cache.conversationId}" }
         }
         chats[id] = cache
         contacts[id] = fromEvent.subject
