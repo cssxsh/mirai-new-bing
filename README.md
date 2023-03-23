@@ -12,7 +12,8 @@
 
 由于微软还未在中国大陆开放 `New Bing` 的使用，以国内IP去访问 `Bing` 会导致跳转 `404` 而无法使用  
 ~~故需要配置代理 `proxy`~~  
-尝试使用新的API，目前测试的结果表明不需要代理 (23/03/20)  
+~~尝试使用新的API，目前测试的结果表明不需要代理~~ (23/03/20)  
+新的API也开始 404 了， 需要配置代理了 (23/03/23)
 
 使用前请赋予权限！！！！！！！！！
 
@@ -21,7 +22,7 @@ New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访
 出现 [`Sorry, you need to login first to access this service.`](https://github.com/cssxsh/mirai-new-bing/issues/1) 表示Cookie不可用  
 原因可能是是 `IP` 和 `Cookie` 不匹配（浏览器和插件没有使用同一个代理，或者同一个网络）。
 
-推荐一下 `https://github.com/chathub-dev/chathub` 这个 Chrome 插件，可以免代理直接使用 `New Bing`  
+推荐一下 `https://github.com/chathub-dev/chathub` 这个 Chrome 插件，可以~~免代理~~直接使用 `New Bing`  
 你可以用它来抓 `Cookie`, 保证 `Cookie` 可用性。
 
 ## 效果
