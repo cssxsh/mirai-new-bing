@@ -28,20 +28,14 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("options")
     override val options: List<String> by value(listOf(
         "deepleo",
-        "nlu_direct_response_filter",
+        "enable_debug_commands",
         "disable_emoji_spoken_text",
-        "responsible_ai_policy_235",
-        "enablemm",
-        "dtappid",
-        "rai253",
-        "dv3sugg",
-        "harmonyv3"
+        "enablemm"
     ))
 
     @ValueName("allowed_message_types")
     override val allowed: List<String> by value(listOf(
-        "Chat",
-        "InternalSearchQuery"
+        "Chat"
     ))
 
     @ValueName("chat_prefix")

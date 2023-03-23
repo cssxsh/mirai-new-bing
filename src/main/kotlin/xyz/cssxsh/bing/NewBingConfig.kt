@@ -10,6 +10,30 @@ public interface NewBingConfig {
     public val device: String
     public val language: String
 
+    /**
+     * * deepleo
+     * * enable_debug_commands
+     * * disable_emoji_spoken_text
+     * * enablemm
+     */
     public val options: List<String>
+
+    /**
+     * * Chat
+     * * InternalSearchQuery
+     * * InternalSearchResult
+     * * Disengaged
+     * * InternalLoaderMessage
+     * * RenderCardRequest
+     * * AdsQuery
+     * * SemanticSerp
+     * * GenerateContentQuery
+     * * SearchQuery
+     */
     public val allowed: List<String>
+
+    /**
+     * TODO
+     */
+    public val sliceIds: List<String> get() = emptyList()
 }

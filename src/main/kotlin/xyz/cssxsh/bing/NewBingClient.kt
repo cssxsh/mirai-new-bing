@@ -170,11 +170,9 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                                 add("galileo")
                             }
                             "Creative" -> {
-                                // add("clgalileo")
                                 add("h3imaginative")
                             }
                             "Precise" -> {
-                                // add("clgalileo")
                                 add("h3precise")
                             }
                             else -> logger.warn("Unknown Style: $style")
@@ -186,7 +184,9 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                         }
                     }
                     putJsonArray("sliceIds") {
-                        // TODO
+                        for (id in config.sliceIds) {
+                            add(id)
+                        }
                     }
                     // XXX: traceId
                     put("isStartOfSession", chat.index == 0)
