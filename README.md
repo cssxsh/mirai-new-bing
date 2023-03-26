@@ -3,7 +3,7 @@
 > 基于 Mirai Console 的 New Bing Chat Bot 插件
 
 [![maven-central](https://img.shields.io/maven-central/v/xyz.cssxsh.mirai/mirai-new-bing)](https://search.maven.org/artifact/xyz.cssxsh.mirai/mirai-new-bing)
-[![test](https://github.com/cssxsh/mirai-new-bing/actions/workflows/test.yml/badge.svg)](https://github.com/cssxsh/mirai-new-bing/actions/workflows/test.yml)
+[![build](https://github.com/cssxsh/mirai-new-bing/actions/workflows/build.yml/badge.svg)](https://github.com/cssxsh/mirai-new-bing/actions/workflows/build.yml)
 
 **使用前应该查阅的相关文档**
 
