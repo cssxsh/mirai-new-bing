@@ -17,6 +17,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import org.slf4j.*
 import java.util.*
+import kotlin.random.*
 
 public open class NewBingClient(@PublishedApi internal val config: NewBingConfig) {
     public companion object {
@@ -58,16 +59,21 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
 
     public open suspend fun create(): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
+        val ip = Random(uuid.hashCode()).run { "13.${nextInt(104, 107)}.${nextInt(0, 255)}.${nextInt(0, 255)}" }
         val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
             header("x-ms-client-request-id", uuid)
             header("x-ms-useragent", config.device)
             header("accept-language", config.language)
+            header("x-forwarded-for", ip)
 
             if ("=" in config.cookie) {
                 header("cookie", config.cookie)
             } else {
                 cookie("_U", config.cookie)
             }
+        }
+        if (response.contentLength() == 0L) {
+            throw ServerResponseException(response, "<empty>")
         }
 
         if (response.contentType() == ContentType.Text.Html) {
