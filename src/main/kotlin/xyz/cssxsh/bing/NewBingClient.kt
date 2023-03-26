@@ -61,6 +61,11 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         val uuid: UUID = UUID.randomUUID()
         val ip = Random(uuid.hashCode()).run { "13.${nextInt(104, 107)}.${nextInt(0, 255)}.${nextInt(0, 255)}" }
         val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
+            url {
+                if (config.mirror.isNotEmpty()) {
+                    takeFrom(config.mirror)
+                }
+            }
             header("x-ms-client-request-id", uuid)
             header("x-ms-useragent", config.device)
             header("accept-language", config.language)
@@ -181,7 +186,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                             "Precise" -> {
                                 add("h3precise")
                             }
-                            else -> logger.warn("Unknown Style: $style")
+                            else -> logger.warn("Unknown Style: '$style'")
                         }
                     }
                     putJsonArray("allowedMessageTypes") {
