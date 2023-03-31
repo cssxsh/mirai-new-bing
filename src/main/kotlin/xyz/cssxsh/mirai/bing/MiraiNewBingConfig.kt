@@ -6,7 +6,7 @@ import xyz.cssxsh.bing.*
 public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("proxy")
     @ValueDescription("代理，配置时请注意单引号")
-    override val proxy: String by value("")
+    override val proxy: String by value("socks://127.0.0.1:7890")
 
     @ValueName("mirror")
     @ValueDescription("镜像，配置时请注意单引号")

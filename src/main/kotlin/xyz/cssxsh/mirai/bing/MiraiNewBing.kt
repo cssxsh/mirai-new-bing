@@ -27,6 +27,7 @@ public object MiraiNewBing : KotlinPlugin(
             value.value = token
         }
         MiraiNewBingConfig.save()
+        logger.info { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
 
         MiraiNewBingListener.chat
         MiraiNewBingListener.reload
