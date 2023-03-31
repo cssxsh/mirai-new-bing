@@ -14,6 +14,7 @@
 ~~故需要配置代理 `proxy`~~  
 ~~尝试使用新的API，目前测试的结果表明不需要代理~~ (23/03/20)  
 新的API也开始 404 了， 需要配置代理了 (23/03/23)
+`Max send count 20 exceeded. Consider increasing the property maxSendCount if more is required.` 说明代理配置有问题 (23/03/31)
 
 使用前请赋予权限！！！！！！！！！
 
