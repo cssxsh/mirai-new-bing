@@ -5,11 +5,7 @@ import okhttp3.Dns
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.dnsoverhttps.DnsOverHttps
-import okhttp3.internal.tls.OkHostnameVerifier
 import java.net.*
-import java.security.*
-import java.security.cert.*
-import javax.net.ssl.*
 
 internal fun OkHttpClient.Builder.apply(config: NewBingConfig) {
     dns(object : Dns {
@@ -29,7 +25,16 @@ internal fun OkHttpClient.Builder.apply(config: NewBingConfig) {
             }
         }
     })
-    proxy(config.proxy.ifEmpty { null }?.let { urlString ->
+    proxy(config.proxy.ifEmpty {
+        val system = System.getProperty("java.net.useSystemProxies", "false")
+        try {
+            System.setProperty("java.net.useSystemProxies", "true")
+            proxySelector(ProxySelector.getDefault())
+        } finally {
+            System.setProperty("java.net.useSystemProxies", system)
+        }
+        null
+    }?.let { urlString ->
         val url = Url(urlString)
         when (url.protocol) {
             URLProtocol.HTTP -> Proxy(Proxy.Type.HTTP, InetSocketAddress(url.host, url.port))
