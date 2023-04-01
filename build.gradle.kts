@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "0.4.1"
+version = "0.4.2"
 
 mavenCentralPublish {
     useCentralS01()

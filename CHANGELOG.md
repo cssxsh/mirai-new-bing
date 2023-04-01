@@ -1,3 +1,7 @@
+## 0.4.2 (23/04/02)
+
+1.  feat: useSystemProxies
+
 ## 0.4.1 (23/03/31)
 
 1.  feat: proxy log
