@@ -13,10 +13,10 @@
 由于微软还未在中国大陆开放 `New Bing` 的使用，以国内IP去访问 `Bing` 会导致跳转 `404` 而无法使用  
 ~~故需要配置代理 `proxy`~~  
 ~~尝试使用新的API，目前测试的结果表明不需要代理~~ (23/03/20)  
-新的API也开始 404 了， 需要配置代理了 (23/03/23)
+新的API也开始 404 了， 需要配置代理了 (23/03/23)  
 `Max send count 20 exceeded. Consider increasing the property maxSendCount if more is required.` 说明代理配置有问题 (23/03/31)
 
-使用前请赋予权限！！！！！！！！！
+使用前请[赋予权限](https://github.com/mamoe/mirai/blob/dev/mirai-console/docs/BuiltInCommands.md#permissioncommand)！！！！！！！！！
 
 New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下
 
