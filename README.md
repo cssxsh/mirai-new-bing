@@ -16,9 +16,12 @@
 新的API也开始 404 了， 需要配置代理了 (23/03/23)  
 `Max send count 20 exceeded. Consider increasing the property maxSendCount if more is required.` 说明代理配置有问题 (23/03/31)
 
-使用前请[赋予权限](https://github.com/mamoe/mirai/blob/dev/mirai-console/docs/BuiltInCommands.md#permissioncommand)！！！！！！！！！
+使用前请[赋予权限](https://github.com/mamoe/mirai/blob/dev/mirai-console/docs/BuiltInCommands.md#permissioncommand)！！！！！！  
+权限ID会在日志里给出！！！！！！
 
-New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下
+New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下  
+拿到 `_U` 的方法:  
+![cookie.png](.github/cookie.png)
 
 出现 [`Sorry, you need to login first to access this service.`](https://github.com/cssxsh/mirai-new-bing/issues/1) 表示Cookie不可用  
 原因可能是是 `IP` 和 `Cookie` 不匹配（浏览器和插件没有使用同一个代理，或者同一个网络）。
