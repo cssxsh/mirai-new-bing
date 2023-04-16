@@ -57,22 +57,23 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     private val contacts: MutableMap<String, Contact> = java.util.concurrent.ConcurrentHashMap()
 
     override fun handleException(context: CoroutineContext, exception: Throwable) {
+        val proxy = MiraiNewBingConfig.proxy.ifEmpty { "全局代理" }
         when (exception) {
             is CancellationException -> {
                 // ...
             }
             is ExceptionInEventHandlerException -> {
                 if (exception.cause is java.net.SocketException) {
-                    logger.warning({ "当前代理设置: '${MiraiNewBingConfig.proxy}'" }, exception.cause)
+                    logger.warning({ "当前代理设置: $proxy" }, exception.cause)
                 } else {
                     logger.warning({ "MiraiNewBingListener with ${exception.event}" }, exception.cause)
                 }
             }
             is ClientRequestException -> {
-                logger.warning { "当前代理设置: ${MiraiNewBingConfig.proxy.ifEmpty { "''" }}, 请求失败: ${exception.response.request.url}" }
+                logger.warning { "当前代理设置: $proxy, 请求失败: ${exception.response.request.url}" }
             }
             else -> {
-                logger.warning({ "MiraiNewBingListener with '${MiraiNewBingConfig.proxy}'" }, exception)
+                logger.warning({ "MiraiNewBingListener with $proxy" }, exception)
             }
         }
     }
