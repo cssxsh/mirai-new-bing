@@ -8,6 +8,7 @@ import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.command.CommandSender.Companion.toCommandSender
 import net.mamoe.mirai.console.permission.*
 import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
+import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
@@ -15,6 +16,7 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.bing.*
 import java.time.Instant
+import java.util.WeakHashMap
 import kotlin.coroutines.*
 
 @PublishedApi
@@ -78,6 +80,8 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
         }
     }
 
+    private val remind: MutableMap<Long, Long> = WeakHashMap()
+
     @EventHandler(priority = EventPriority.HIGH, concurrency = ConcurrencyKind.CONCURRENT)
     fun MessageEvent.reload() {
         val commander = toCommandSender()
@@ -114,7 +118,14 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
     suspend fun MessageEvent.chat() {
         val commander = toCommandSender()
-        if (commander.hasPermission(chat).not()) return
+        if (commander.hasPermission(chat).not()) {
+            val last = System.currentTimeMillis() - remind.getOrPut(sender.id) { 0 }
+            if (last > 600_000) {
+                remind[sender.id] = System.currentTimeMillis()
+                logger.warning("${sender.render()} 缺少权限 ${chat.id}")
+            }
+            return
+        }
 
         val content = message.contentToString()
         val (test, style) = when {
