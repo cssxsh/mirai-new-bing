@@ -117,16 +117,6 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
 
     @EventHandler(concurrency = ConcurrencyKind.CONCURRENT)
     suspend fun MessageEvent.chat() {
-        val commander = toCommandSender()
-        if (commander.hasPermission(chat).not()) {
-            val last = System.currentTimeMillis() - remind.getOrPut(sender.id) { 0 }
-            if (last > 600_000) {
-                remind[sender.id] = System.currentTimeMillis()
-                logger.warning("${sender.render()} 缺少权限 ${chat.id}")
-            }
-            return
-        }
-
         val content = message.contentToString()
         val (test, style) = when {
             content.startsWith(MiraiNewBingConfig.creative) -> {
@@ -142,6 +132,15 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
                 content.removePrefix(MiraiNewBingConfig.prefix) to MiraiNewBingConfig.default
             }
             else -> return
+        }
+        val commander = toCommandSender()
+        if (commander.hasPermission(chat).not()) {
+            val last = System.currentTimeMillis() - remind.getOrPut(sender.id) { 0 }
+            if (last > 600_000) {
+                remind[sender.id] = System.currentTimeMillis()
+                logger.warning("${sender.render()} 缺少权限 ${chat.id}")
+            }
+            return
         }
 
         launch {
