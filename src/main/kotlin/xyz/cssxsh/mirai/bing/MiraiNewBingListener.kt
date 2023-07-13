@@ -59,7 +59,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
     private val contacts: MutableMap<String, Contact> = java.util.concurrent.ConcurrentHashMap()
 
     override fun handleException(context: CoroutineContext, exception: Throwable) {
-        val proxy = MiraiNewBingConfig.proxy.ifEmpty { "全局代理" }
+        val proxy = MiraiNewBingConfig.proxy.ifEmpty { "系统代理" }
         when (exception) {
             is CancellationException -> {
                 // ...

@@ -25,9 +25,14 @@ public object MiraiNewBing : KotlinPlugin(
             @Suppress("UNCHECKED_CAST")
             val value = MiraiNewBingConfig.findBackingFieldValue<String>("cookie") as Value<String>
             value.value = token
+
+            MiraiNewBingConfig.save()
         }
-        MiraiNewBingConfig.save()
-        logger.info { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
+        if (MiraiNewBingConfig.proxy == "http" || MiraiNewBingConfig.proxy == "socks") {
+            logger.error { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
+        } else {
+            logger.info { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
+        }
 
         MiraiNewBingListener.chat
         MiraiNewBingListener.reload
