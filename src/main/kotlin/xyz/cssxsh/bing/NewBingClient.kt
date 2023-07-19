@@ -60,7 +60,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
     public open suspend fun create(): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
         val ip = Random(uuid.hashCode()).run { "13.${nextInt(104, 107)}.${nextInt(0, 255)}.${nextInt(0, 255)}" }
-        val response = http.get("https://edgeservices.bing.com/edgesvc/turing/conversation/create") {
+        val response = http.get("https://www.bing.com/turing/conversation/create") {
             url {
                 if (config.mirror.isNotEmpty()) {
                     takeFrom(config.mirror)
@@ -70,13 +70,11 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             header("x-ms-useragent", config.device)
             header("accept-language", config.language)
             header("x-forwarded-for", ip)
-
-            if ("=" in config.cookie) {
-                header("cookie", config.cookie)
-            } else {
-                cookie("_U", config.cookie)
-            }
+            header("cookie", config.cookie)
         }
+
+        logger.debug(response.toString())
+
         if (response.contentLength() == 0L) {
             throw ServerResponseException(response, "<empty>")
         }
@@ -90,8 +88,6 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         check(conversation.result.value == "Success") {
             conversation.result.message ?: conversation.result.value
         }
-
-        logger.debug(response.toString())
 
         return NewBingChat(
             clientId = conversation.clientId,

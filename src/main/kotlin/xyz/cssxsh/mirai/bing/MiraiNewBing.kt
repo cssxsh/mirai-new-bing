@@ -1,9 +1,7 @@
 package xyz.cssxsh.mirai.bing
 
 import kotlinx.coroutines.*
-import net.mamoe.mirai.console.data.*
 import net.mamoe.mirai.console.plugin.jvm.*
-import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 
@@ -17,21 +15,16 @@ public object MiraiNewBing : KotlinPlugin(
     }
 ) {
     override fun onEnable() {
-        MiraiNewBingConfig.reload()
-        if (MiraiNewBingConfig.cookie.isEmpty()) {
-            val token = runBlocking { ConsoleInput.requestInput(hint = "请输入 New Bing Cookie") }
-
-            @OptIn(ConsoleExperimentalApi::class)
-            @Suppress("UNCHECKED_CAST")
-            val value = MiraiNewBingConfig.findBackingFieldValue<String>("cookie") as Value<String>
-            value.value = token
-
-            MiraiNewBingConfig.save()
-        }
-        if (MiraiNewBingConfig.proxy == "http" || MiraiNewBingConfig.proxy == "socks") {
-            logger.error { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
-        } else {
-            logger.info { "当前代理设置 '${MiraiNewBingConfig.proxy}'" }
+        with(MiraiNewBingConfig) {
+            reload()
+            if (cookie.isEmpty()) {
+                logger.warning("请将 Cookie 写入 ${cache.toPath().toUri()}")
+            }
+            if (proxy == "http" || proxy == "socks") {
+                logger.error { "当前代理设置 '${proxy}'" }
+            } else {
+                logger.info { "当前代理设置 '${proxy}'" }
+            }
         }
 
         MiraiNewBingListener.chat

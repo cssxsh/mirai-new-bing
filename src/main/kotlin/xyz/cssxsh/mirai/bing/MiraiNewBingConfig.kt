@@ -1,9 +1,24 @@
 package xyz.cssxsh.mirai.bing
 
 import net.mamoe.mirai.console.data.*
+import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.console.util.*
 import xyz.cssxsh.bing.*
+import java.io.File
 
 public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
+
+    override val cookie: String get() = cache.readText()
+
+    @PublishedApi
+    internal var cache: File = File("./cookie.txt")
+
+    @ConsoleExperimentalApi
+    override fun onInit(owner: PluginDataHolder, storage: PluginDataStorage) {
+        val plugin = owner as? JvmPlugin ?: return
+        cache = plugin.resolveDataFile("cookie.txt")
+    }
+
     @ValueName("proxy")
     @ValueDescription("代理，配置时请注意单引号")
     override val proxy: String by value("")
@@ -20,9 +35,6 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
 
     @ValueName("timeout")
     override val timeout: Long by value(30_000L)
-
-    @ValueName("cookie")
-    override val cookie: String by value("")
 
     @ValueName("device")
     override val device: String by value("azsdk-js-api-client-factory/1.0.0-beta.1 core-rest-pipeline/1.10.0 OS/MacIntel")

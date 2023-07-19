@@ -26,7 +26,10 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
             launch {
                 shared.collect { (uuid, data) ->
                     val item = data["item"] as? JsonObject ?: return@collect
-                    val messages = item["messages"] as? JsonArray ?: return@collect
+                    val messages = item["messages"] as? JsonArray ?: kotlin.run {
+                        logger.warn((item["result"] ?: data).toString())
+                        return@collect
+                    }
                     for (element in messages) {
                         val message = format.decodeFromJsonElement(NewBingMessage.serializer(), element)
                         if ("bot" != message.author) continue
