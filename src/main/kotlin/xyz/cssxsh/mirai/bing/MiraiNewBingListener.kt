@@ -1,6 +1,8 @@
 package xyz.cssxsh.mirai.bing
 
+import io.ktor.client.call.*
 import io.ktor.client.plugins.*
+import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
@@ -14,6 +16,7 @@ import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import xyz.cssxsh.bing.*
 import java.time.Instant
 import java.util.WeakHashMap
@@ -22,6 +25,7 @@ import kotlin.coroutines.*
 @PublishedApi
 internal object MiraiNewBingListener : SimpleListenerHost() {
     private val client = object : NewBingClient(config = MiraiNewBingConfig) {
+        private val IMAGE = """!\[(.+)]\((https://.+\.png)\)""".toRegex()
         init {
             launch {
                 shared.collect { (uuid, data) ->
@@ -39,7 +43,23 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
 
                         launch {
                             subject.sendMessage(buildMessageChain {
-                                appendLine(message.text)
+                                val images = mutableListOf<String>()
+                                appendLine(message.text.replace(IMAGE) { match ->
+                                    val (alt, url) = match.destructured
+                                    images.add(url)
+                                    alt
+                                })
+                                for (url in images) {
+                                    try {
+                                        val bytes = http.get(url).body<ByteArray>()
+                                        bytes.toExternalResource().use { resource ->
+                                            subject.uploadImage(resource)
+                                        }
+                                    } catch (cause: Throwable) {
+                                        logger.warn("upload image $url", cause)
+                                        continue
+                                    }
+                                }
                                 if (MiraiNewBingConfig.source && message.sourceAttributions.isEmpty().not()) {
                                     appendLine()
                                     var index = 1
