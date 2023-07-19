@@ -19,8 +19,8 @@
 使用前请[赋予权限](https://github.com/mamoe/mirai/blob/dev/mirai-console/docs/BuiltInCommands.md#permissioncommand)！！！！！！  
 权限ID会在日志里给出！！！！！！
 
-New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下  
-拿到 `_U` 的方法:  
+~~New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下~~  
+New Bing 加入了新的 Cookie 检测, 所以需要全部 cookie 内容  
 ![cookie.png](.github/cookie.png)
 
 出现 [`Sorry, you need to login first to access this service.`](https://github.com/cssxsh/mirai-new-bing/issues/1) 表示Cookie不可用  

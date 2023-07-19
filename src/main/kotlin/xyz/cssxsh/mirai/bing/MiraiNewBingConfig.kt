@@ -16,7 +16,9 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ConsoleExperimentalApi
     override fun onInit(owner: PluginDataHolder, storage: PluginDataStorage) {
         val plugin = owner as? JvmPlugin ?: return
-        cache = plugin.resolveDataFile("cookie.txt")
+        cache = plugin.resolveDataFile("cookie.txt").apply {
+            if (exists().not()) createNewFile()
+        }
     }
 
     @ValueName("proxy")
