@@ -22,6 +22,7 @@
 ~~New Bing 网页 Cookie 最关键是 `_U` 这个 Cookie, 如果没有，可以访问 <https://www.bing.com/new> 刷新一下~~  
 New Bing 加入了新的 Cookie 检测, 所以需要全部 cookie 内容  
 ![cookie.png](.github/cookie.png)
+由于内容比较多，所以要求将其写入文件 `data/xyz.cssxsh.mirai.plugin.new-bing/cookie.txt`
 
 出现 [`Sorry, you need to login first to access this service.`](https://github.com/cssxsh/mirai-new-bing/issues/1) 表示Cookie不可用  
 原因可能是是 `IP` 和 `Cookie` 不匹配（浏览器和插件没有使用同一个代理，或者同一个网络）。
@@ -39,7 +40,6 @@ New Bing 加入了新的 Cookie 检测, 所以需要全部 cookie 内容
 
 *   `proxy` 代理, 协议支持 `socks` 和 `http`, 例如 `socks://127.0.0.1:7890`
 *   `timeout` API超时时间
-*   `cookie` New Bing 网页 Cookie
 *   `chat_prefix` 聊天触发前缀, 默认 `bing`
 *   `default_style` 默认使用的风格, 可选择值有 `Balanced`, `Creative`, `Precise`
 *   `reload_prefix` 触发配置重置，`bing-reload`
