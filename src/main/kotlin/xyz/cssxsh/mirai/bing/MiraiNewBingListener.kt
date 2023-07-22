@@ -31,7 +31,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
                 shared.collect { (uuid, data) ->
                     val item = data["item"] as? JsonObject ?: return@collect
                     val messages = item["messages"] as? JsonArray ?: kotlin.run {
-                        logger.warn((item["result"] ?: data).toString())
+                        logger.warning((item["result"] ?: data).toString())
                         return@collect
                     }
                     for (element in messages) {
@@ -56,7 +56,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
                                             subject.uploadImage(resource)
                                         }
                                     } catch (cause: Throwable) {
-                                        logger.warn("upload image $url", cause)
+                                        logger.warning("upload image $url", cause)
                                         continue
                                     }
                                 }
@@ -74,7 +74,7 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
             }
         }
     }
-    private val logger = MiraiLogger.Factory.create(this::class)
+    internal val logger = MiraiLogger.Factory.create(this::class)
     internal val chat: Permission by MiraiBingPermissions
     internal val reload: Permission by MiraiBingPermissions
     private val chats: MutableMap<String, NewBingChat> = java.util.concurrent.ConcurrentHashMap()

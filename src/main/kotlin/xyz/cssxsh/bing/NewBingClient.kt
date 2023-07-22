@@ -55,7 +55,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
     protected val shared: MutableSharedFlow<Pair<String, JsonObject>> = MutableSharedFlow()
 
     @PublishedApi
-    internal val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    internal val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     public open suspend fun create(): NewBingChat {
         val uuid: UUID = UUID.randomUUID()
@@ -73,7 +73,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             header("cookie", config.cookie)
         }
 
-        logger.debug(response.toString())
+        log.debug(response.toString())
 
         if (response.contentLength() == 0L) {
             throw ServerResponseException(response, "<empty>")
@@ -107,7 +107,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             when (val frame = incoming.receive()) {
                 is Frame.Binary -> {
                     // TODO
-                    logger.warn("Frame.Binary")
+                    log.warn("Frame.Binary")
                 }
                 is Frame.Text -> {
                     for (text in frame.readText().splitToSequence(RS)) {
@@ -115,20 +115,20 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                         val item = format.decodeFromString(JsonObject.serializer(), text)
                         when (item["type"]?.jsonPrimitive?.int) {
                             1 -> {
-                                if (logger.isTraceEnabled) logger.trace(item.toString())
+                                if (log.isTraceEnabled) log.trace(item.toString())
                             }
                             2 -> {
-                                if (logger.isDebugEnabled) logger.debug(item.toString())
+                                if (log.isDebugEnabled) log.debug(item.toString())
                                 launch {
                                     shared.emit(chat.uuid to item)
                                 }
                             }
                             3 -> {
-                                if (logger.isDebugEnabled) logger.debug(item.toString())
+                                if (log.isDebugEnabled) log.debug(item.toString())
                                 return
                             }
                             6 -> {
-                                if (logger.isDebugEnabled) logger.debug(item.toString())
+                                if (log.isDebugEnabled) log.debug(item.toString())
                                 // echo
                                 launch {
                                     sendJson {
@@ -138,7 +138,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                                 continue
                             }
                             else -> {
-                                if (item.isEmpty().not()) logger.warn(item.toString())
+                                if (item.isEmpty().not()) log.warn(item.toString())
                                 continue
                             }
                         }
@@ -182,7 +182,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
                             "Precise" -> {
                                 add("h3precise")
                             }
-                            else -> logger.warn("Unknown Style: '$style'")
+                            else -> log.warn("Unknown Style: '$style'")
                         }
                     }
                     putJsonArray("allowedMessageTypes") {
