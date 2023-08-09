@@ -5,11 +5,12 @@ import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 
-public object MiraiNewBing : KotlinPlugin(
+@PublishedApi
+internal object MiraiNewBing : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.new-bing",
         name = "mirai-new-bing",
-        version = "0.5.0",
+        version = "0.5.1"
     ) {
         author("cssxsh")
     }
