@@ -216,9 +216,11 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         }
     }
 
-    protected open suspend fun websocket(block: suspend DefaultClientWebSocketSession.() -> Unit) {
+    protected open suspend fun websocket(uuid: String, block: suspend DefaultClientWebSocketSession.() -> Unit) {
         http.wss("wss://sydney.bing.com/sydney/ChatHub", {
             header("accept-language", config.language)
+            header("x-ms-client-request-id", uuid)
+            header("x-ms-useragent", config.device)
         }, block)
     }
 
@@ -226,7 +228,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
      * @param style Balanced, Creative, Precise
      */
     public suspend fun send(chat: NewBingChat, text: String, style: String) {
-        websocket {
+        websocket(uuid = chat.uuid) {
             bind(chat = chat)
             message(chat = chat, text = text, style = style)
             handle(chat = chat)
