@@ -40,7 +40,9 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         }
         ContentEncoding()
         WebSockets {
-            //
+            extensions {
+               install(WebSocketDeflateExtension)
+            }
         }
         expectSuccess = true
         engine {
