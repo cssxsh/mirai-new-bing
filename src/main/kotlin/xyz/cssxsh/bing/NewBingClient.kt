@@ -24,6 +24,8 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
         public const val RS: String = "\u001E"
         public const val USER_AGENT: String =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 Edg/111.0.1661.44"
+        public const val DEVICE: String =
+            "azsdk-js-api-client-factory/1.0.0-beta.1 core-rest-pipeline/1.10.0 OS/MacIntel"
     }
 
     public open val http: HttpClient = HttpClient(OkHttp) {
@@ -36,7 +38,7 @@ public open class NewBingClient(@PublishedApi internal val config: NewBingConfig
             requestTimeoutMillis = null
         }
         install(UserAgent) {
-            agent = USER_AGENT
+            agent = config.ua
         }
         ContentEncoding()
         WebSockets {

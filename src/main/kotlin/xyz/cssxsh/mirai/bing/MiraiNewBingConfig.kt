@@ -38,8 +38,11 @@ public object MiraiNewBingConfig : ReadOnlyPluginConfig("bing"), NewBingConfig {
     @ValueName("timeout")
     override val timeout: Long by value(30_000L)
 
+    @ValueName("user_agent")
+    override val ua: String by value(NewBingClient.USER_AGENT)
+
     @ValueName("device")
-    override val device: String by value("azsdk-js-api-client-factory/1.0.0-beta.1 core-rest-pipeline/1.10.0 OS/MacIntel")
+    override val device: String by value(NewBingClient.DEVICE)
 
     @ValueName("accept-language")
     override val language: String by value("zh-CN,zh;q=0.9")
