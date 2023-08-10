@@ -97,6 +97,9 @@ internal object MiraiNewBingListener : SimpleListenerHost() {
             is ClientRequestException -> {
                 logger.warning { "当前代理设置: $proxy, 请求失败: ${exception.response.request.url}" }
             }
+            is java.net.ProtocolException -> {
+                logger.warning({ "当前代理设置: $proxy, cookie 失效或 cookie 和 IP 不匹配" }, exception)
+            }
             else -> {
                 logger.warning({ "MiraiNewBingListener with $proxy" }, exception)
             }
